@@ -1,0 +1,70 @@
+@import "colors";
+@import "normalize";
+
+.tab-container {
+	max-width: 100%;
+	margin: auto;
+	display: grid;
+	grid-template-columns: 20% auto;
+	grid-gap: 10px;
+}
+
+/* Tabs */
+.tab {
+	width: 100%;
+	display: block;
+	position: relative;
+	margin-bottom: -0.5em;
+	padding: 1em;
+	border: 0;
+}
+
+.tab.is-selected {
+	filter: none;
+	background-color: white;
+}
+
+.tab.is-selected::after {
+	position: absolute;
+	z-index: 1;
+	bottom: -0.5em;
+	left: 0;
+	right: 0;
+	display: block;
+	content: "";
+	border-bottom: 0.5em solid white;
+}
+
+/* Tab-content */
+.tab-contents {
+	position: relative;
+}
+
+.tab-content {
+	display: none;
+	padding: 0 2.5em;
+	border: 0.5em solid var(--border-color);
+	background-color: white;
+}
+
+.tab-content.is-selected {
+	display: block;
+}
+
+.tab-content img {
+	width: 100%;
+}
+
+.tab-content__left {
+	width: 55%;
+	float: left;
+}
+
+.tab-content__right {
+	margin-top: 10px;
+	width: 44%;
+	float: right;
+}
+.clr {
+	clear: both;
+}
