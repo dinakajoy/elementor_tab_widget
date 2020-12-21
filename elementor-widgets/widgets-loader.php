@@ -44,22 +44,48 @@ final class Widgets_Loader {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		add_action( 'wp_enqueue_scripts', array( $this, 'scripts_styles' ) );
-		add_action( 'init', array( $this, 'i18n' ) );
-		add_action( 'plugins_loaded', array( $this, 'init' ) );
+		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
 	}
 
 	/**
-	 * Load Scripts & Styles
+	 * On Plugins Loaded
+	 *
+	 * Checks if Elementor has loaded, and performs some compatibility checks.
+	 * If All checks pass, inits the plugin.
+	 *
+	 * Fired by `plugins_loaded` action hook.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @access public
+	 */
+	public function on_plugins_loaded() {
+
+		if ( $this->is_compatible() ) {
+			add_action( 'elementor/init', array( $this, 'init' ) );
+		}
+
+	}
+
+	/**
+	 * Initialize the plugin
 	 *
 	 * @since 1.0.0
 	 */
-	public function scripts_styles() {
-		wp_register_style( 'myew-style', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/css/tab.css', array(), rand(), 'all' );
-		wp_register_script( 'myew-script', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/js/tab.js', array(), rand(), true );
+	public function init() {
 
-		wp_enqueue_style( 'myew-style' );
-		wp_enqueue_script( 'myew-script' );
+		// Load widgets.
+		add_action( 'elementor/widgets/widgets_registered', array( $this, 'register_widgets' ) );
+
+		// Load i18n.
+		$this->i18n();
+
+		// Register Widget Styles
+		add_action( 'elementor/frontend/after_enqueue_styles', array( $this, 'widget_styles' ) );
+
+		// Register Widget Scripts
+		add_action( 'elementor/frontend/after_register_scripts', array( $this, 'widget_scripts' ) );
+
 	}
 
 	/**
@@ -96,32 +122,66 @@ final class Widgets_Loader {
 	}
 
 	/**
-	 * Initialize the plugin
+	 * Load Styles
 	 *
 	 * @since 1.0.0
 	 */
-	public function init() {
-		// Check if ELementor is installed and activated.
+	public function widget_styles() {
+
+		wp_register_style( 'elementor-tab-widget-style', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/css/tab.css', array(), wp_rand(), 'all' );
+		wp_register_style( 'font-awesome', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/fonts/font-awesome.min.css', array(), '4.7.0', null );
+
+		wp_enqueue_style( 'elementor-tab-widget-style' );
+		wp_enqueue_style( 'font-awesome' );
+
+	}
+
+	/**
+	 * Load Scripts
+	 *
+	 * @since 1.0.0
+	 */
+	public function widget_scripts() {
+
+		wp_register_script( 'elementor-tab-widget-script', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/js/tab.js', array( 'jquery' ), wp_rand(), true );
+
+		wp_enqueue_script( 'elementor-tab-widget-script' );
+
+	}
+
+	/**
+	 * Compatibility Checks
+	 *
+	 * Checks if the installed version of Elementor meets the plugin's minimum requirement.
+	 * Checks if the installed PHP version meets the plugin's minimum requirement.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @access public
+	 */
+	public function is_compatible() {
+		// Check if Elementor installed and activated
 		if ( ! did_action( 'elementor/loaded' ) ) {
 			add_action( 'admin_notices', array( $this, 'admin_notice_missing_main_plugin' ) );
 
-			return;
+			return false;
 		}
 
+		// Check for required Elementor version
 		if ( ! version_compare( ELEMENTOR_VERSION, self::MINIMUM_ELEMENTOR_VERSION, '>=' ) ) {
 			add_action( 'admin_notices', array( $this, 'admin_notice_minimum_elementor_version' ) );
 
-			 return;
+			return false;
 		}
 
-		if ( ! version_compare( PHP_VERSION, self::MINIMUM_PHP_VERSION, '>=' ) ) {
+		// Check for required PHP version
+		if ( version_compare( PHP_VERSION, self::MINIMUM_PHP_VERSION, '<' ) ) {
 			add_action( 'admin_notices', array( $this, 'admin_notice_minimum_php_version' ) );
 
-			return;
+			return false;
 		}
 
-		// Load widgets.
-		add_action( 'elementor/widgets/widgets_registered', array( $this, 'register_widgets' ) );
+		return true;
 	}
 
 	/**

@@ -22,36 +22,42 @@ __webpack_require__.r(__webpack_exports__);
 var tabContainer = document.querySelector('.tab-container');
 var tabs = tabContainer.querySelectorAll('.tab');
 var tabContents = tabContainer.querySelectorAll('.tab-content');
+
+var tabEvent = function tabEvent(event) {
+  var button = event.target; // Store the "theme" being selected.
+
+  var tabTheme = button.getAttribute('data-theme');
+
+  if (button.classList.contains('is-selected')) {
+    // Abort if it's already selected.
+    return;
+  } else {
+    // Go through the NodeList and remove 'old' is-selected.
+    tabs.forEach(function (tab) {
+      if (tab.classList.contains('is-selected')) {
+        tab.classList.remove('is-selected');
+      }
+    }); // Add 'new' is-selected to clicked button.
+
+    button.classList.add('is-selected');
+  } // Loop through content sections' NodeList.
+
+
+  tabContents.forEach(function (section) {
+    // Store the data-theme for each section.
+    var contentTheme = section.getAttribute('data-theme'); // check if the section data-theme is the same as the one that was clicked on the Tab button.
+
+    if (contentTheme === tabTheme) {
+      section.classList.add('is-selected');
+    } else {
+      section.classList.remove('is-selected');
+    }
+  });
+};
+
 tabs.forEach(function (button) {
   button.addEventListener('click', function (event) {
-    // Store the "theme" being selected.
-    var tabTheme = button.getAttribute('data-theme');
-
-    if (button.classList.contains('is-selected')) {
-      // Abort if it's already selected.
-      return;
-    } else {
-      // Go through the NodeList and remove 'old' is-selected.
-      tabs.forEach(function (tab) {
-        if (tab.classList.contains('is-selected')) {
-          tab.classList.remove('is-selected');
-        }
-      }); // Add 'new' is-selected to clicked button.
-
-      button.classList.add('is-selected');
-    } // Loop through content sections' NodeList.
-
-
-    tabContents.forEach(function (section) {
-      // Store the data-theme for each section.
-      var contentTheme = section.getAttribute('data-theme'); // check if the section data-theme is the same as the one that was clicked on the Tab button.
-
-      if (contentTheme === tabTheme) {
-        section.classList.add('is-selected');
-      } else {
-        section.classList.remove('is-selected');
-      }
-    });
+    return tabEvent(event);
   });
 });
 

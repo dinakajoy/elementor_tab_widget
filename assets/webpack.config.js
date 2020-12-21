@@ -12,6 +12,8 @@ const StyleLintPlugin = require( 'stylelint-webpack-plugin' );
 
 // JS Directory path.
 const JS_DIR = path.resolve( __dirname, 'src/js' );
+const IMG_DIR = path.resolve(__dirname, 'src/img');
+const FONTS_DIR = path.resolve(__dirname, 'src/fonts');
 const BUILD_DIR = path.resolve( __dirname, 'build' );
 
 module.exports = {
@@ -51,6 +53,28 @@ module.exports = {
 					'sass-loader'
 				]
 			},
+			{
+				test: /\.(png|jpg|svg|jpeg|gif|ico)$/,
+				exclude: [ FONTS_DIR, /node_modules/ ],
+				use: {
+					loader: 'file-loader',
+					options: {
+						name: 'img/[name].[ext]',
+						publicPath: 'production' === process.env.NODE_ENV ? '../' : '../'
+					}
+				}
+			},
+			{
+				test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+				exclude: [ IMG_DIR, /node_modules/ ],
+				use: {
+					loader: 'file-loader',
+					options: {
+						name: 'fonts/[name].[ext]',
+						publicPath: 'production' === process.env.NODE_ENV ? '../' : '../'
+					}
+				}
+			}
 		]
 	},
 

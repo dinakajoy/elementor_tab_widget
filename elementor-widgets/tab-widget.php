@@ -12,6 +12,10 @@ namespace Elementor_Widgets;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
+use Elementor\Group_Control_Typography;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Box_Shadow;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -44,7 +48,40 @@ class Tab_Widget extends Widget_Base {
 	 * @return string Widget title.
 	 */
 	public function get_title() {
-		return 'Tab Widget';
+		return __( 'Tab Widget', 'elementor-tab-widget' );
+	}
+
+	/**
+	 * Get widget dependencies.
+	 *
+	 * Retrieve widget style dependencies.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 *
+	 * @return string Widget dependencies.
+	 */
+	public function get_style_depends() {
+		return array(
+			'elementor-tab-widget-style',
+			'font-awesome',
+		);
+	}
+
+	/**
+	 * Get widget dependencies.
+	 *
+	 * Retrieve widget script dependencies.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 *
+	 * @return string Widget dependencies.
+	 */
+	public function get_script_depends() {
+		return array(
+			'elementor-tab-widget-script',
+		);
 	}
 
 	/**
@@ -87,90 +124,683 @@ class Tab_Widget extends Widget_Base {
 
 		$this->start_controls_section(
 			'section_tabs',
-			[
-                'label' => __( 'Tab Settings', 'elementor-tab-widget' ),
-                'tab' => Controls_Manager::TAB_CONTENT,
-            ]
+			array(
+				'label' => __( 'Tab Settings', 'elementor-tab-widget' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
 		);
 
 		// <i class="fa fa-check" aria-hidden="true">
 
 		$this->add_control(
 			'tabs',
-			[
-				'label' => __( 'Tabs Items', 'elementor-tab-widget' ),
-				'type' => Controls_Manager::REPEATER,
-				'default' => [
-					[
-						'tab_title' => __( 'Default Tab #1', 'elementor-tab-widget' ),
+			array(
+				'label'       => __( 'Tabs Items', 'elementor-tab-widget' ),
+				'type'        => Controls_Manager::REPEATER,
+				'default'     => array(
+					array(
+						'tab_title'       => __( 'Default Title #1', 'elementor-tab-widget' ),
 						'tab_description' => __( 'I am tab content. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.', 'elementor' ),
-					],
-					[
-						'tab_title' => __( 'Default Tab #2', 'elementor-tab-widget' ),
+					),
+					array(
+						'tab_title'       => __( 'Default Title #2', 'elementor-tab-widget' ),
 						'tab_description' => __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo. I am tab content. Click edit button to change this text.', 'elementor' ),
-					],
-				],
-				'fields' => [
-					[
-						'name' => 'tab_title',
-						'label' => __( 'Tab Title', 'elementor-tab-widget' ),
-						'type' => Controls_Manager::TEXT,
-						'default' => __( 'Tab Title', 'elementor-tab-widget' ),
+					),
+				),
+				'fields'      => array(
+					array(
+						'name'        => 'tab_title',
+						'label'       => __( 'Tab Title', 'elementor-tab-widget' ),
+						'type'        => Controls_Manager::TEXT,
+						'default'     => __( 'Tab Title', 'elementor-tab-widget' ),
 						'placeholder' => __( 'Tab Title', 'elementor-tab-widget' ),
 						'label_block' => true,
-					],
-					[
-						'name' => 'tab_description',
-						'label' => __( 'Tab Description', 'elementor-tab-widget' ),
-						'type' => Controls_Manager::WYSIWYG,
-						'default' => __( 'Tab Description', 'elementor-tab-widget' ),
+					),
+					array(
+						'name'        => 'tab_description',
+						'label'       => __( 'Tab Description', 'elementor-tab-widget' ),
+						'type'        => Controls_Manager::WYSIWYG,
+						'default'     => __( 'Tab Description', 'elementor-tab-widget' ),
 						'placeholder' => __( 'Tab Content', 'elementor-tab-widget' ),
-						'show_label' => false,
-					],
-					[
-						'name' => 'tab_link_url',
-						'label' => __( 'Button URL', 'elementor-tab-widget' ),
-						'type' => Controls_Manager::URL,
-						'placeholder' => __( 'https://your-link.com', 'elementor-tab-widget' ),
+						'show_label'  => false,
+					),
+					array(
+						'name'          => 'tab_link_url',
+						'label'         => __( 'Button URL', 'elementor-tab-widget' ),
+						'type'          => Controls_Manager::URL,
+						'placeholder'   => __( 'https://your-link.com', 'elementor-tab-widget' ),
 						'show_external' => true,
-						'default' => [
-							'url' => '#',
+						'default'       => array(
+							'url'         => '#',
 							'is_external' => true,
-							'nofollow' => true,
-						],
-					],
-					[
-						'name' => 'tab_link_text',
-						'label' => __( 'Button Text', 'elementor-tab-widget' ),
-						'type' => Controls_Manager::TEXT,
-						'default' => __( 'Button Text', 'elementor-tab-widget' ),
+							'nofollow'    => true,
+						),
+					),
+					array(
+						'name'        => 'tab_link_text',
+						'label'       => __( 'Button Text', 'elementor-tab-widget' ),
+						'type'        => Controls_Manager::TEXT,
+						'default'     => __( 'Button Text', 'elementor-tab-widget' ),
 						'placeholder' => __( 'My Link', 'elementor-tab-widget' ),
 						'label_block' => true,
-					],
-					[
-						'name' => 'tab_image',
-						'label' => __( 'Choose Image', 'elementor-tab-widget' ),
-						'type' => Controls_Manager::MEDIA,
-						'default' => [
+					),
+					array(
+						'name'    => 'tab_image',
+						'label'   => __( 'Choose Image', 'elementor-tab-widget' ),
+						'type'    => Controls_Manager::MEDIA,
+						'default' => array(
 							'url' => Utils::get_placeholder_image_src(),
-						],
-					]
-				],
+						),
+					),
+				),
 
 				'title_field' => '{{{ tab_title }}}',
+			)
+		);
+
+		$this->end_controls_section();
+
+		$this->style_tab();
+	}
+
+	/**
+	 * Widget Style Customization.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 */
+	private function style_tab() {
+
+		/**
+		 * Tab Section Style Settings
+		 */
+		$this->start_controls_section(
+			'tab_section_style',
+			[
+				'label' => __( 'Tab Section', 'elementor-tab-widget' ),
+				'tab' => Controls_Manager::TAB_STYLE,
 			]
 		);
 
-		$this->add_control(
-			'view',
+		// Margin
+		$this->add_responsive_control(
+			'tab_margin',
 			[
-				'label' => __( 'View', 'elementor-tab-widget' ),
-				'type' => Controls_Manager::HIDDEN,
-				'default' => 'traditional',
+				'label' => __( 'Margin', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 0,
+					'right' => 0,
+					'bottom' => 0,
+					'left' => 0,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .tabs-section' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Padding
+		$this->add_responsive_control(
+			'tab_padding',
+			[
+				'label' => __( 'Padding', 'elementor-tab-widgetn' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 0,
+					'right' => 0,
+					'bottom' => 0,
+					'left' => 0,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .tabs-section' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Border Type
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'tab_border',
+				'label' => __( 'Border', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .tabs-section',
+			]
+		);
+
+		 // Box Shadow
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'tab_box_shadow',
+				'label' => __( 'Box Shadow', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .tabs-section',
+			]
+		);
+
+		// Width
+		$this->add_control(
+			'tab_width',
+			[
+				'label' => __( 'Width', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ '%' ],
+				'description' => 'Default: 100%',
+				'range' => [
+					'%' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'default' => [
+					'unit' => '%',
+					'size' => 100,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .tabs-section' => 'width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Background Color
+		$this->add_control(
+			'tab_backgorund_color',
+			[
+				'label' => __( 'Background Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => 'transparent',
+				'selectors' => [
+					'{{WRAPPER}} .tabs-section ' => 'background-color: {{VALUE}}',
+				],
 			]
 		);
 
 		$this->end_controls_section();
+
+		/**
+		 * Tab Title Style Settings
+		 */
+		$this->start_controls_section(
+			'tab_title_style',
+			[
+				'label' => __( 'Tab Title', 'elementor-tab-widget' ),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		// Title Typography
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'tab_title_typography',
+				'label' => __( 'Typography', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .tab-title',
+			]
+		);
+
+		// Padding
+		$this->add_responsive_control(
+			'tab_title_padding',
+			[
+				'label' => __( 'Padding', 'elementor-tab-widgetn' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 7,
+					'right' => 0,
+					'bottom' => 7,
+					'left' => 0,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .tab-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Border Type
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'tab_title_border',
+				'label' => __( 'Border', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .tab-title',
+			]
+		);
+
+		// Box Shadow
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'tab_title_box_shadow',
+				'label' => __( 'Box Shadow', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .tab-title',
+			]
+		);
+
+		// Text Color
+		$this->add_control(
+			'tab_title_text_color',
+			[
+				'label' => __( 'Text Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#333333',
+				'selectors' => [
+					'{{WRAPPER}} .tab-title' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		// Background Color
+		$this->add_control(
+			'tab_title_backgorund_color',
+			[
+				'label' => __( 'Background Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .tab-title' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		// Active Tab Text Color
+		$this->add_control(
+			'active_tab_title_text_color',
+			[
+				'label' => __( 'Active Tab Text Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#00599a',
+				'selectors' => [
+					'{{WRAPPER}} .tab-title.is-selected' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		// Active Tab Background Color
+		$this->add_control(
+			'active_tab_title_backgorund_color',
+			[
+				'label' => __( 'Active Tab Background Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#e0e0e0',
+				'selectors' => [
+					'{{WRAPPER}} .tab-title.is-selected' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->end_controls_section();
+
+		/**
+		 * Tab Content Section Style Settings
+		 */
+		$this->start_controls_section(
+			'tab_content_section_style',
+			[
+				'label' => __( 'Tab Content Section', 'elementor-tab-widget' ),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		// Margin
+		$this->add_responsive_control(
+			'tab_content_margin',
+			[
+				'label' => __( 'Margin', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 0,
+					'right' => 0,
+					'bottom' => 0,
+					'left' => 0,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .content-section' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Padding
+		$this->add_responsive_control(
+			'tab_content_padding',
+			[
+				'label' => __( 'Padding', 'elementor-tab-widgetn' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 0,
+					'right' => 0,
+					'bottom' => 0,
+					'left' => 0,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .content-section' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Border Type
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'tab_content_border',
+				'label' => __( 'Border', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .content-section',
+			]
+		);
+
+		 // Box Shadow
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'tab_content_box_shadow',
+				'label' => __( 'Box Shadow', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .content-section',
+			]
+		);
+
+		// Width
+		$this->add_control(
+			'tab_content_width',
+			[
+				'label' => __( 'Width', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ '%' ],
+				'description' => 'Default: 100%',
+				'range' => [
+					'%' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'default' => [
+					'unit' => '%',
+					'size' => 100,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .content-section' => 'width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Background Color
+		$this->add_control(
+			'tab_content_backgorund_color',
+			[
+				'label' => __( 'Background Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => 'transparent',
+				'selectors' => [
+					'{{WRAPPER}} .content-section ' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		/**
+		 * Tab Content Style Settings
+		 */
+
+		$this->add_control(
+			'tab_desc_style',
+			[
+				'label' => __( 'Tab Content Description', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		// Description Typography
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'tab_desc_typography',
+				'label' => __( 'Typography', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .tab-desc',
+			]
+		);
+
+		// Text Color
+		$this->add_control(
+			'tab_desc_text_color',
+			[
+				'label' => __( 'Text Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#333333',
+				'selectors' => [
+					'{{WRAPPER}} .tab-desc' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		// Background Color
+		$this->add_control(
+			'tab_desc_backgorund_color',
+			[
+				'label' => __( 'Background Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .tab-desc' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		/**
+		 * Tab Button Style Settings
+		 */
+		$this->add_control(
+			'tab_btn_style',
+			[
+				'label' => __( 'Tab Content Button', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		// Background Color
+		$this->add_control(
+			'tab_btn_bg_color',
+			[
+				'label' => __( 'Background Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#00599a',
+				'selectors' => [
+					'{{WRAPPER}} .tab-btn a' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		// Text Color
+		$this->add_control(
+			'tab_btn_text_color',
+			[
+				'label' => __( 'Text Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#ffffff',
+				'selectors' => [
+					'{{WRAPPER}} .tab-btn a' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		// Background Color On Hover
+		$this->add_control(
+			'but_button_hover_bg_color',
+			[
+				'label' => __( 'Background Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#00599a',
+				'selectors' => [
+					'{{WRAPPER}} .tab-btn a:hover' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		// Text Color On Hover
+		$this->add_control(
+			'tab_btn_hover_text_color',
+			[
+ 				'label' => __( 'Text Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '#ffffff',
+				'selectors' => [
+					'{{WRAPPER}} .tab-btn a:hover' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		/**
+		 * Tab Image Style Settings
+		 */
+		$this->add_control(
+			'tab_img_style',
+			[
+				'label' => __( 'Tab Content Image', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		// Width
+		$this->add_responsive_control(
+			'image_width',
+			[
+				'label' => __( 'Width', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', '%' ],
+				'description' => 'Desfault: 100%',
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 1000,
+						'step' => 1,
+					],
+					'%' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'default' => [
+					'unit' => '%',
+					'size' => 100,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .tab-img' => 'width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Height
+		$this->add_responsive_control(
+			'image_height',
+			[
+				'label' => __( 'Height', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', '%' ],
+				'description' => 'Desfault: 230px',
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 1000,
+						'step' => 1,
+					],
+					'%' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'default' => [
+					'unit' => 'px',
+					'size' => 230,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .tab-img' => 'height: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Margin
+		$this->add_responsive_control(
+			'image_margin',
+			[
+				'label' => __( 'Margin', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 0,
+					'right' => 0,
+					'bottom' => 0,
+					'left' => 0,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .tab-img' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Padding
+		$this->add_responsive_control(
+			'image_padding',
+			[
+				'label' => __( 'Padding', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 0,
+					'right' => 0,
+					'bottom' => 0,
+					'left' => 0,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .tab-img' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		// Border Type
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'image_border',
+				'label' => __( 'Border', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .tab-img',
+			]
+		);
+
+		// Border Radius
+		$this->add_responsive_control(
+			'image_border_radius',
+			[
+				'label' => __( 'Border Radius', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 0,
+					'right' => 0,
+					'bottom' => 0,
+					'left' => 0,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .tab-img' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
+				],
+			]
+		);
+
+		// Box Shadow
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'image_box_shadow',
+				'label' => __( 'Box Shadow', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .tab-img',
+			]
+		);
+
+		$this->end_controls_section();
+
 	}
 
 	/**
@@ -182,80 +812,120 @@ class Tab_Widget extends Widget_Base {
 	 * @access protected
 	 */
 	protected function render() {
-		$tabs = $this->get_settings( 'tabs' );
-		$id_int = substr( $this->get_id_int(), 0, 3 );
-		?>
+		$settings = $this->get_settings_for_display();
 
-		<div class="tab-container">
-			<div class="tabs">
-				<button class="tab is-selected" data-theme="digimon">
-					Digimon
-				</button>
-				<button class="tab" data-theme="pokemon">
-					Pokemon
-				</button>
-				<button class="tab" data-theme="tamagotchi">
-					Tamagotchi
-				</button>
-			</div>
+		if ( $settings['tabs'] ) {
+			?>
 
-			<div class="tab-contents">
-				<section class="tab-content is-selected" data-theme="digimon">
-					<div class="tab-content__left">
-						<h2>Digimon</h2>
-						<p>
-							Digimon, short for "Digital Monsters", is a Japanese media franchise
-							encompassing virtual pet toys, anime, manga, video games, films and
-							a trading card game. The franchise focuses on Digimon creatures,
-							which are monsters living in a "Digital World", a parallel universe
-							that originated from Earth's various communication networks.
-						</p>
-						<div><a href="https://en.wikipedia.org/wiki/Digimon">More about Digimon</a></div>
-					</div>
-					<div class="tab-content__right">
-						<img src="https://images.pexels.com/photos/2312369/pexels-photo-2312369.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="digimon" />
-					</div>
-					<div class="clr"></div>
-				</section>
+			<section class="tab-container st-container" role="tablist">
+				<div class="tabs tabs-section">
+					<?php
+					foreach ( $settings['tabs'] as $index => $item ) {
 
-				<section class="tab-content" data-theme="pokemon">
-					<div>
-						<h2>Pokémon</h2>
-						<p>
-							Pokémon also known as Pocket Monsters in Japan, is a media franchise
-							managed by The Pokémon Company, a Japanese consortium between
-							Nintendo, Game Freak, and Creatures. The franchise copyright is
-							shared by all three companies, but Nintendo is the sole owner of the
-							trademark.
-						</p>
-						<div><a href="https://en.wikipedia.org/wiki/Pokémon">More about Pokémon</a></div>
-					<div>
-					<div>
-						<img src="https://images.pexels.com/photos/4974915/pexels-photo-4974915.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="digimon" />
-					</div>
-					<div class="clr"></div>
-				</section>
+						// For inline editing.
+						$tab_title_setting_key = $this->get_repeater_setting_key( 'tab_title', 'tabs', $index );
+						$this->add_inline_editing_attributes( $tab_title_setting_key, 'none' );
 
-				<section class="tab-content" data-theme="tamagotchi">
-					<div>
-						<h2>Tamagotchi</h2>
-						<p>
-							The Tamagotchi is a handheld digital pet, created in Japan by
-							Akihiro Yokoi of Bandai. It was released by Bandai on November 23,
-							1996 in Japan and May 1, 1997 in the rest of the world, quickly
-							becoming one of the biggest toy fads of the 1990s and early 2000s.
-							As of 2010, over 76 million Tamagotchis had been sold worldwide.
-						</p>
-						<div><a href="https://en.wikipedia.org/wiki/Tamagotchi">More about Tamagotchi</a></div>
-					<div>
-					<div>
-						<img src="https://images.pexels.com/photos/4050318/pexels-photo-4050318.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="digimon" />
+						?>
+						<button class="tab tab-title <?php echo ( 0 === $index ) ? 'is-selected' : ''; ?>" data-theme="<?php echo esc_html( $index ); ?>" <?php echo $this->get_render_attribute_string( $tab_title_setting_key ); ?>>
+							<?php echo esc_html( $item['tab_title'] ); ?>
+						</button>
+						<?php
+
+					}
+					?>
+				</div>
+
+				<div class="tab-contents content-section">
+					<?php
+					foreach ( $settings['tabs'] as $index => $item ) {
+
+						// Button.
+						$button_target   = $item['tab_link_url']['is_external'] ? ' target="_blank"' : '';
+						$button_nofollow = $item['tab_link_url']['nofollow'] ? ' rel="nofollow"' : '';
+
+						// For inline editing.
+
+						$tab_description_setting_key = $this->get_repeater_setting_key( 'tab_description', 'tabs', $index );
+						$this->add_render_attribute(
+							$tab_description_setting_key,
+							[
+								'class' => [ 'tab-desc' ],
+							]
+						);
+						$this->add_inline_editing_attributes( $tab_description_setting_key, 'advanced' );
+
+						$tab_btn_text_setting_key = $this->get_repeater_setting_key( 'tab_link_text', 'tabs', $index );
+						$this->add_inline_editing_attributes( $tab_btn_text_setting_key, 'none' );
+
+						?>
+						<section class="tab-content <?php echo ( 0 === $index ) ? 'is-selected' : ''; ?>" data-theme="<?php echo esc_html( $index ); ?>">
+							<div class="tab-content__left">
+								<div <?php echo $this->get_render_attribute_string( $tab_description_setting_key ); ?>><?php echo esc_html( $item['tab_description'] ); ?></div>
+								<div class="tab-btn">
+									<a href="<?php echo esc_url( $item['tab_link_url']['url'] ); ?>" <?php echo $button_target; ?> <?php echo $button_nofollow; ?> alt="<?php echo esc_attr( $item['tab_link_text'] ); ?>" >
+										<span <?php echo $this->get_render_attribute_string( $tab_btn_text_setting_key ); ?>><?php echo esc_html( $item['tab_link_text'] ); ?></span>
+									</a>
+								</div>
+							</div>
+							<div class="tab-content__right img-wrapper">
+								<img class="tab-img" src="<?php echo esc_attr( $item['tab_image']['url']); ?>" alt="<?php echo esc_attr( $item['tab_title'] ); ?>" />
+							</div>
+						</section>
+					<?php } ?>
+				</div>
+			</section>
+
+			<section class="tabs-mobile st-container" role="tablist">
+				<?php
+				foreach ( $settings['tabs'] as $index => $item ) {
+
+					// Button.
+					$button_target   = $item['tab_link_url']['is_external'] ? ' target="_blank"' : '';
+					$button_nofollow = $item['tab_link_url']['nofollow'] ? ' rel="nofollow"' : '';
+
+					// For inline editing.
+					$tab_title_setting_key = $this->get_repeater_setting_key( 'tab_title', 'tabs', $index );
+					$this->add_inline_editing_attributes( $tab_title_setting_key, 'none' );
+
+					$tab_description_setting_key = $this->get_repeater_setting_key( 'tab_description', 'tabs', $index );
+					$this->add_render_attribute(
+						$tab_description_setting_key,
+						[
+							'class' => [ 'tab-desc' ],
+						]
+					);
+					$this->add_inline_editing_attributes( $tab_description_setting_key, 'advanced' );
+
+					$tab_btn_text_setting_key = $this->get_repeater_setting_key( 'tab_link_text', 'tabs', $index );
+					$this->add_inline_editing_attributes( $tab_btn_text_setting_key, 'none' );
+					?>
+					<div class="tab-mobile content-section">
+
+						<input type="checkbox" id="<?php echo esc_html( $index ); ?>" <?php echo ( 0 === $index ) ? 'checked' : ''; ?> />
+						<label class="tab-label-mobile tab-title" for="<?php echo esc_html( $index ); ?>">
+							<span <?php echo $this->get_render_attribute_string( $tab_title_setting_key ); ?>><?php echo esc_html( $item['tab_title'] ); ?></span>
+						</label>
+
+						<div class="tab-content-mobile content-section">
+							<div class="tab-img-mobile img-wrapper">
+								<img class="tab-img" src="<?php echo esc_attr( $item['tab_image']['url']); ?>" alt="<?php echo esc_attr( $item['tab_title'] ); ?>" />
+							</div>
+							<div <?php echo $this->get_render_attribute_string( $tab_description_setting_key ); ?>>
+								<?php echo esc_html( $item['tab_description'] ); ?>
+							</div>
+							<div class="tab-btn">
+								<a href="<?php echo esc_url( $item['tab_link_url']['url'] ); ?>" <?php echo $button_target; ?> <?php echo $button_nofollow; ?> alt="<?php echo esc_attr( $item['tab_link_text'] ); ?>" >
+									<span <?php echo $this->get_render_attribute_string( $tab_btn_text_setting_key ); ?>><?php echo esc_html( $item['tab_link_text'] ); ?></span>
+								</a>
+							</div>
+						</div>
 					</div>
-					<div class="clr"></div>
-				</section>
-			</div>
-		</div>
-		<?php
+				<?php } ?>
+			</section>
+
+			<?php
+		}
 	}
 
 	/**
@@ -267,6 +937,124 @@ class Tab_Widget extends Widget_Base {
 	 * @access protected
 	 */
 	protected function _content_template() {
+		?>
+		<#
+		if ( settings.tabs ) {
+			#>
+			<section class="tab-container st-container" role="tablist">
+				<div class="tabs tabs-section">
+					<#
+					_.each( settings.tabs, function( item, index ) {
+						<!-- For inline editing.. -->
+						var tabTitleKey = view.getRepeaterSettingKey( 'tab_title', 'tabs', index );
+						view.addInlineEditingAttributes( tabTitleKey, 'none' );
+
+						#>
+						<# if ( index === 0 ) { #>
+						<button class="tab is-selected tab-section" data-theme="{{ index }}">
+						<# } else { #>
+						<button class="tab tab-title" data-theme="{{ index }}" {{{ view.getRenderAttributeString( tabTitleKey ) }}}>
+						<# } #>
+							{{{ item.tab_title }}}
+						</button>
+					<# } ); #>
+				</div>
+
+				<div class="tab-contents content-section">
+					<#
+					_.each( settings.tabs, function( item, index ) {
+
+						<!-- Button. -->
+						var link_target = item.tab_link_url.is_external ? ' target="_blank"' : '';
+						var link_nofollow = item.tab_link_url.nofollow ? ' rel="nofollow"' : '';
+
+						<!-- For inline editing.. -->
+						var tabDescriptionKey = view.getRepeaterSettingKey( 'tab_description', 'tabs', index );
+						view.addRenderAttribute(
+							tabDescriptionKey,
+							{
+								'class': [  'tab-desc' ],
+							}
+						);
+						view.addInlineEditingAttributes( tabDescriptionKey, 'advanced' );
+
+						var tabBtnTextKey = view.getRepeaterSettingKey( 'tab_link_text', 'tabs', index );
+						view.addInlineEditingAttributes( tabBtnTextKey, 'none' );
+
+						#>
+						<# if ( index === 0 ) { #>
+						<section class="tab-content is-selected" data-theme="{{ index }}">
+						<# } else { #>
+						<section class="tab-content" data-theme="{{ index }}">
+						<# } #>
+							<div class="tab-content__left">
+								<div {{{ view.getRenderAttributeString( tabDescriptionKey ) }}}> {{{ item.tab_description }}} </div>
+								<div class="tab-btn">
+									<a href="{{ item.tab_link_url.url }}" {{ link_target }} {{ link_nofollow }}>
+										<span {{{ view.getRenderAttributeString( tabBtnTextKey ) }}}> {{{ item.tab_link_text }}} </span>
+									</a>
+								</div>
+							</div>
+							<div class="tab-content__right img-wrapper">
+								<img src="{{ item.tab_image.url }}" alt="{{ item.tab_title }}" class="tab-img" />
+							</div>
+						</section>
+					<# } ); #>
+				</div>
+			</section>
+
+			<section class="tabs-mobile st-container" role="tablist">
+				<#
+				_.each( settings.tabs, function( item, index ) {
+
+					<!-- Button. -->
+					var link_target = item.tab_link_url.is_external ? ' target="_blank"' : '';
+					var link_nofollow = item.tab_link_url.nofollow ? ' rel="nofollow"' : '';
+
+					<!-- For inline editing.. -->
+					var tabTitleKey = view.getRepeaterSettingKey( 'tab_title', 'tabs', index );
+					view.addInlineEditingAttributes( tabTitleKey, 'none' );
+
+					var tabDescriptionKey = view.getRepeaterSettingKey( 'tab_description', 'tabs', index );
+					view.addRenderAttribute(
+						tabDescriptionKey,
+						{
+							'class': [  'tab-desc' ],
+						}
+					);
+					view.addInlineEditingAttributes( tabDescriptionKey, 'advanced' );
+
+					var tabBtnTextKey = view.getRepeaterSettingKey( 'tab_link_text', 'tabs', index );
+					view.addInlineEditingAttributes( tabBtnTextKey, 'none' );
+
+					#>
+					<div class="tab-mobile content-section">
+						<# if ( index === 0 ) { #>
+						<input type="checkbox" checked id="{{ index }}" />
+						<# } else { #>
+						<input type="checkbox" id="{{ index }}" />
+						<# } #>
+						<label class="tab-label-mobile tab-title" for="{{ index }}">
+							<span {{{ view.getRenderAttributeString( tabTitleKey ) }}}> {{{ item.tab_title }}} </span>
+						</label>
+
+						<div class="tab-content-mobile">
+							<div class="tab-img-mobile img-wrapper">
+								<img src="{{ item.tab_image.url }}" alt="{{ item.tab_title }}" class="tab-img" />
+							</div>
+							<div {{{ view.getRenderAttributeString( tabDescriptionKey ) }}}> {{{ item.tab_description }}} </div>
+							<div class="tab-btn">
+								<a href="{{ item.tab_link_url.url }}" {{ link_target }} {{ link_nofollow }}>
+									<span {{{ view.getRenderAttributeString( tabBtnTextKey ) }}}> {{{ item.tab_link_text }}} </span>
+								</a>
+							</div>
+						</div>
+					</div>
+				<# } ); #>
+			</section>
+
+		<# } #>
+		<?php
 	}
 
 }
