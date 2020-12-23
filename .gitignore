@@ -27,3 +27,8 @@ Thumbs.db
 sftp-config.json
 *.sublime-project
 *.sublime-workspace
+
+vendor
+.phpunit.result.cache
+composer.*
+tests

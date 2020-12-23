@@ -25,6 +25,22 @@ final class Widgets_Loader {
 	// Instance.
 	private static $_instance = null;
 
+	// Return plugin version.
+	public function etw_get_version() {
+		$plugin_data = get_plugin_data( __FILE__ );
+		$plugin_version = $plugin_data['Version'];
+
+		return $plugin_version;
+
+	}
+
+	// Deactivate plugin.
+	public function deactivate_plugin() {
+		if ( is_plugin_active( '../elementor-tab-widget.php' ) ) {
+			deactivate_plugins( '../elementor-tab-widget.php' );
+		}
+	}
+
 	/**
 	 * SIngletone Instance Method
 	 *
@@ -128,7 +144,7 @@ final class Widgets_Loader {
 	 */
 	public function widget_styles() {
 
-		wp_register_style( 'elementor-tab-widget-style', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/css/tab.css', array(), wp_rand(), 'all' );
+		wp_register_style( 'elementor-tab-widget-style', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/css/tab.css', array(), $this->etw_get_version(), 'all' );
 		wp_register_style( 'font-awesome', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/fonts/font-awesome.min.css', array(), '4.7.0', null );
 
 		wp_enqueue_style( 'elementor-tab-widget-style' );
@@ -143,7 +159,7 @@ final class Widgets_Loader {
 	 */
 	public function widget_scripts() {
 
-		wp_register_script( 'elementor-tab-widget-script', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/js/tab.js', array( 'jquery' ), wp_rand(), true );
+		wp_register_script( 'elementor-tab-widget-script', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/js/tab.js', array( 'jquery' ), $this->etw_get_version(), true );
 
 		wp_enqueue_script( 'elementor-tab-widget-script' );
 
@@ -191,16 +207,16 @@ final class Widgets_Loader {
 	 * @since 1.0.0
 	 */
 	public function admin_notice_missing_main_plugin() {
-		if ( isset( $_GET['activate'] ) ) {
-			unset( $_GET['activate'] );
-		}
+		$this->deactivate_plugin();
+
 			$message = sprintf(
+				/* translators: %s: error message */
 				esc_html__( '"%1$s" requires "%2$s" to be installed and activated', 'elementor-tab-widget' ),
 				'<strong>' . esc_html__( 'Elementor Tab Widget', 'elementor-tab-widget' ) . '</strong>',
 				'<strong>' . esc_html__( 'Elementor', 'elementor-tab-widget' ) . '</strong>'
 			);
 
-		printf( '<div class="notice notice-warning is-dimissible"><p>%1$s</p></div>', $message );
+		printf( '<div class="notice notice-warning is-dimissible"><p>%1$s</p></div>', esc_html( $message ) );
 	}
 
 	/**
@@ -210,17 +226,17 @@ final class Widgets_Loader {
 	 * @since 1.0.0
 	 */
 	public function admin_notice_minimum_elementor_version() {
-		if ( isset( $_GET['activate'] ) ) {
-			unset( $_GET['activate'] );
-		}
+		$this->deactivate_plugin();
+
 		$message = sprintf(
+			/* translators: %s: error message */
 			esc_html__( '"%1$s" requires "%2$s" version %3$s or greater', 'elementor-tab-widget' ),
 			'<strong>' . esc_html__( 'Elementor Tab Widget', 'elementor-tab-widget' ) . '</strong>',
 			'<strong>' . esc_html__( 'Elementor', 'elementor-tab-widget' ) . '</strong>',
 			self::MINIMUM_ELEMENTOR_VERSION
 		);
 
-		printf( '<div class="notice notice-warning is-dimissible"><p>%1$s</p></div>', $message );
+		printf( '<div class="notice notice-warning is-dimissible"><p>%1$s</p></div>', esc_html( $message ) );
 	}
 
 	/**
@@ -230,17 +246,17 @@ final class Widgets_Loader {
 	 * @since 1.0.0
 	 */
 	public function admin_notice_minimum_php_version() {
-		if ( isset( $_GET['activate'] ) ) {
-			unset( $_GET['activate'] );
-		}
+		$this->deactivate_plugin();
+
 		$message = sprintf(
+			/* translators: %s: error message */
 			esc_html__( '"%1$s" requires "%2$s" version %3$s or greater', 'elementor-tab-widget' ),
 			'<strong>' . esc_html__( 'Elementor Tab Widget', 'elementor-tab-widget' ) . '</strong>',
 			'<strong>' . esc_html__( 'PHP', 'elementor-tab-widget' ) . '</strong>',
 			self::MINIMUM_PHP_VERSION
 		);
 
-		printf( '<div class="notice notice-warning is-dimissible"><p>%1$s</p></div>', $message );
+		printf( '<div class="notice notice-warning is-dimissible"><p>%1$s</p></div>', esc_html( $message ) );
 	}
 
 }

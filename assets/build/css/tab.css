@@ -281,12 +281,17 @@ button {
   margin: 3.125rem auto;
   display: grid;
   grid-template-columns: 25% auto;
-  grid-gap: 0.625rem;
+  grid-gap: 1.875rem;
   background-color: transparent;
   text-align: center; }
 
 .tabs-mobile {
   display: none; }
+
+.tabs h2 {
+  color: #222222;
+  font-weight: 600;
+  text-transform: uppercase; }
 
 .tab {
   width: 100%;
@@ -294,7 +299,7 @@ button {
   display: block;
   margin: 0.5rem auto;
   padding: 0.4375rem;
-  font-size: 0.8125rem; }
+  font-size: 0.875rem; }
 
 .tab.is-selected {
   filter: none;
@@ -324,11 +329,12 @@ button {
 .tab-contents {
   display: block;
   width: 100%;
-  position: relative; }
+  position: relative;
+  margin: 4.375rem 0 0 1.25rem !important; }
 
 .tab-content {
   display: grid;
-  grid-template-columns: 60% 38%;
+  grid-template-columns: 60% 40%;
   grid-gap: 0.625rem;
   opacity: 0;
   position: absolute;
@@ -341,6 +347,7 @@ button {
   opacity: 1;
   position: relative;
   z-index: 5;
+  height: 100%;
   transition: all linear 0.5s;
   -moz-transition: all linear 0.5s;
   -webkit-transition: all linear 0.5s; }
@@ -349,18 +356,16 @@ button {
   width: 100%; }
 
 .tab-content__left {
-  padding: 0 0.625rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; }
+  padding: 0 1.25rem;
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.6; }
 
 .tab-content__right {
   text-align: right;
   display: flex;
-  flex-direction: column; }
+  flex-direction: column;
+  align-items: flex-end; }
 
 .tab-content.is-selected:nth-child(odd) .tab-content__right {
   justify-content: flex-end; }
@@ -371,7 +376,7 @@ button {
 .tab-content__left a,
 .tab-mobile a {
   background-color: #00599a;
-  padding: 0.4375rem 3.125rem;
+  padding: 0.5625rem 2.5rem;
   color: #ffffff;
   margin: 1.875rem auto;
   text-transform: uppercase;
@@ -385,6 +390,8 @@ button {
   box-shadow: 0.1875rem 0.3125rem #86b4f1; }
 
 @media (max-width: 850px) {
+  .tab-contents {
+    margin: 0.625rem 0 0 0px !important; }
   .tab-content {
     display: flex;
     flex-direction: column;

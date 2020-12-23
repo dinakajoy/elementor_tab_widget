@@ -13,7 +13,6 @@ use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 use Elementor\Group_Control_Typography;
-use Elementor\Scheme_Typography;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 
@@ -49,39 +48,6 @@ class Tab_Widget extends Widget_Base {
 	 */
 	public function get_title() {
 		return __( 'Tab Widget', 'elementor-tab-widget' );
-	}
-
-	/**
-	 * Get widget dependencies.
-	 *
-	 * Retrieve widget style dependencies.
-	 *
-	 * @since 1.0.0
-	 * @access public
-	 *
-	 * @return string Widget dependencies.
-	 */
-	public function get_style_depends() {
-		return array(
-			'elementor-tab-widget-style',
-			'font-awesome',
-		);
-	}
-
-	/**
-	 * Get widget dependencies.
-	 *
-	 * Retrieve widget script dependencies.
-	 *
-	 * @since 1.0.0
-	 * @access public
-	 *
-	 * @return string Widget dependencies.
-	 */
-	public function get_script_depends() {
-		return array(
-			'elementor-tab-widget-script',
-		);
 	}
 
 	/**
@@ -130,8 +96,6 @@ class Tab_Widget extends Widget_Base {
 			)
 		);
 
-		// <i class="fa fa-check" aria-hidden="true">
-
 		$this->add_control(
 			'tabs',
 			array(
@@ -139,12 +103,14 @@ class Tab_Widget extends Widget_Base {
 				'type'        => Controls_Manager::REPEATER,
 				'default'     => array(
 					array(
-						'tab_title'       => __( 'Default Title #1', 'elementor-tab-widget' ),
-						'tab_description' => __( 'I am tab content. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.', 'elementor' ),
+						'tab_title'       => __( 'My margins are shrinking', 'elementor-tab-widget' ),
+						'tab_description' => __( 'A lot of factors contribute to margin compression - some beyond your dealership\'s control. But you can fight back by tackling inefficiencies that make matters worse.', 'elementor' ),
+						'tab_link_text'	=> __( 'Show me where i could be loosing money', 'elementor-tab-widget' )
 					),
 					array(
-						'tab_title'       => __( 'Default Title #2', 'elementor-tab-widget' ),
-						'tab_description' => __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo. I am tab content. Click edit button to change this text.', 'elementor' ),
+						'tab_title'       => __( 'I\'m uncertain about compliances', 'elementor-tab-widget' ),
+						'tab_description' => __( 'Compliance slip ups can be costly to your dealerships bottom line and reputation. But it\'s tough to keep up with ever-changing regulations.', 'elementor' ),
+						'tab_link_text'		=> __( 'Help me stay compliant', 'elementor-tab-widget' )
 					),
 				),
 				'fields'      => array(
@@ -628,7 +594,7 @@ class Tab_Widget extends Widget_Base {
 
 		// Background Color On Hover
 		$this->add_control(
-			'but_button_hover_bg_color',
+			'tab_button_hover_bg_color',
 			[
 				'label' => __( 'Background Color', 'elementor-tab-widget' ),
 				'type' => Controls_Manager::COLOR,
@@ -819,6 +785,7 @@ class Tab_Widget extends Widget_Base {
 
 			<section class="tab-container st-container" role="tablist">
 				<div class="tabs tabs-section">
+					<h4>WHAT ARE YOUR DEALERSHIP'S BIGGEST CHALLENGES</h4>
 					<?php
 					foreach ( $settings['tabs'] as $index => $item ) {
 
@@ -827,7 +794,8 @@ class Tab_Widget extends Widget_Base {
 						$this->add_inline_editing_attributes( $tab_title_setting_key, 'none' );
 
 						?>
-						<button class="tab tab-title <?php echo ( 0 === $index ) ? 'is-selected' : ''; ?>" data-theme="<?php echo esc_html( $index ); ?>" <?php echo $this->get_render_attribute_string( $tab_title_setting_key ); ?>>
+
+						<button class="tab tab-title <?php echo ( 0 === $index ) ? 'is-selected' : ''; ?>" data-theme="<?php echo esc_attr( $index ); ?>" <?php echo esc_attr( $this->get_render_attribute_string( $tab_title_setting_key ) ); ?>>
 							<?php echo esc_html( $item['tab_title'] ); ?>
 						</button>
 						<?php
@@ -859,17 +827,17 @@ class Tab_Widget extends Widget_Base {
 						$this->add_inline_editing_attributes( $tab_btn_text_setting_key, 'none' );
 
 						?>
-						<section class="tab-content <?php echo ( 0 === $index ) ? 'is-selected' : ''; ?>" data-theme="<?php echo esc_html( $index ); ?>">
+						<section class="tab-content <?php echo ( 0 === $index ) ? 'is-selected' : ''; ?>" data-theme="<?php echo esc_attr( $index ); ?>">
 							<div class="tab-content__left">
-								<div <?php echo $this->get_render_attribute_string( $tab_description_setting_key ); ?>><?php echo esc_html( $item['tab_description'] ); ?></div>
+								<div <?php echo esc_attr( $this->get_render_attribute_string( $tab_description_setting_key ) ); ?>><?php echo esc_html( $item['tab_description'] ); ?></div>
 								<div class="tab-btn">
-									<a href="<?php echo esc_url( $item['tab_link_url']['url'] ); ?>" <?php echo $button_target; ?> <?php echo $button_nofollow; ?> alt="<?php echo esc_attr( $item['tab_link_text'] ); ?>" >
-										<span <?php echo $this->get_render_attribute_string( $tab_btn_text_setting_key ); ?>><?php echo esc_html( $item['tab_link_text'] ); ?></span>
+									<a href="<?php echo esc_url( $item['tab_link_url']['url'] ); ?>" <?php echo esc_attr( $button_target ); ?> <?php echo esc_attr( $button_nofollow ); ?> alt="<?php echo esc_attr( $item['tab_link_text'] ); ?>" >
+										<span <?php echo esc_attr( $this->get_render_attribute_string( $tab_btn_text_setting_key ) ); ?>><?php echo esc_html( $item['tab_link_text'] ); ?></span>
 									</a>
 								</div>
 							</div>
 							<div class="tab-content__right img-wrapper">
-								<img class="tab-img" src="<?php echo esc_attr( $item['tab_image']['url']); ?>" alt="<?php echo esc_attr( $item['tab_title'] ); ?>" />
+								<img class="tab-img" src="<?php echo esc_url( $item['tab_image']['url']); ?>" alt="<?php echo esc_attr( $item['tab_title'] ); ?>" />
 							</div>
 						</section>
 					<?php } ?>
@@ -902,21 +870,21 @@ class Tab_Widget extends Widget_Base {
 					?>
 					<div class="tab-mobile content-section">
 
-						<input type="checkbox" id="<?php echo esc_html( $index ); ?>" <?php echo ( 0 === $index ) ? 'checked' : ''; ?> />
+						<input type="checkbox" id="<?php echo esc_html( $index ); ?>" <?php echo ( 0 === $index ) ? esc_attr( 'checked' ) : ''; ?> />
 						<label class="tab-label-mobile tab-title" for="<?php echo esc_html( $index ); ?>">
-							<span <?php echo $this->get_render_attribute_string( $tab_title_setting_key ); ?>><?php echo esc_html( $item['tab_title'] ); ?></span>
+							<span <?php echo esc_attr( $this->get_render_attribute_string( $tab_title_setting_key ) ); ?>><?php echo esc_html( $item['tab_title'] ); ?></span>
 						</label>
 
 						<div class="tab-content-mobile content-section">
 							<div class="tab-img-mobile img-wrapper">
-								<img class="tab-img" src="<?php echo esc_attr( $item['tab_image']['url']); ?>" alt="<?php echo esc_attr( $item['tab_title'] ); ?>" />
+								<img class="tab-img" src="<?php echo esc_url( $item['tab_image']['url']); ?>" alt="<?php echo esc_attr( $item['tab_title'] ); ?>" />
 							</div>
-							<div <?php echo $this->get_render_attribute_string( $tab_description_setting_key ); ?>>
+							<div <?php echo esc_attr( $this->get_render_attribute_string( $tab_description_setting_key ) ); ?>>
 								<?php echo esc_html( $item['tab_description'] ); ?>
 							</div>
 							<div class="tab-btn">
-								<a href="<?php echo esc_url( $item['tab_link_url']['url'] ); ?>" <?php echo $button_target; ?> <?php echo $button_nofollow; ?> alt="<?php echo esc_attr( $item['tab_link_text'] ); ?>" >
-									<span <?php echo $this->get_render_attribute_string( $tab_btn_text_setting_key ); ?>><?php echo esc_html( $item['tab_link_text'] ); ?></span>
+								<a href="<?php echo esc_url( $item['tab_link_url']['url'] ); ?>" <?php echo esc_attr( $button_target ); ?> <?php echo esc_attr( $button_nofollow ); ?> alt="<?php echo esc_attr( $item['tab_link_text'] ); ?>" >
+									<span <?php echo esc_attr( $this->get_render_attribute_string( $tab_btn_text_setting_key ) ); ?>><?php echo esc_html( $item['tab_link_text'] ); ?></span>
 								</a>
 							</div>
 						</div>
