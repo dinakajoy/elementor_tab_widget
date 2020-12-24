@@ -89,6 +89,76 @@ class Tab_Widget extends Widget_Base {
 	protected function _register_controls() {
 
 		$this->start_controls_section(
+			'section_heading',
+			[
+				'label' => __( 'Title Settings', 'elementor-tab-widget' ),
+			]
+		);
+
+		$this->add_control(
+			'heading',
+			[
+				'label' => __( 'Heading', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::TEXTAREA,
+				'placeholder' => __( 'Enter heading', 'elementor-tab-widget' ),
+				'default' => __( 'WHAT ARE YOUR DEALERSHIP\'S BIGGEST CHALLENGES', 'elementor-tab-widget' ),
+			]
+		);
+
+		$this->add_control(
+			'header_size',
+			[
+				'label' => __( 'HTML Tag', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'h1' => __( 'H1', 'elementor-tab-widget' ),
+					'h2' => __( 'H2', 'elementor-tab-widget' ),
+					'h3' => __( 'H3', 'elementor-tab-widget' ),
+					'h4' => __( 'H4', 'elementor-tab-widget' ),
+					'h5' => __( 'H5', 'elementor-tab-widget' ),
+					'h6' => __( 'H6', 'elementor-tab-widget' ),
+					'div' => __( 'div', 'elementor-tab-widget' ),
+					'span' => __( 'span', 'elementor-tab-widget' ),
+					'p' => __( 'p', 'elementor-tab-widget' ),
+				],
+				'default' => 'h4',
+			]
+		);
+
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'section_title_style',
+			[
+				'label' => __( 'Heading Title',  'elementor-tab-widget' ),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'heading_typography',
+				'label' => __( 'Typography', 'elementor-tab-widget' ),
+				'selector' => '{{WRAPPER}} .heading-title',
+			]
+		);
+
+		$this->add_control(
+			'title_color',
+			[
+				'label' => __( 'Text Color', 'elementor-tab-widget' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => 'transparent',
+				'selectors' => [
+					'{{WRAPPER}} .heading-title ' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->end_controls_section();
+
+		$this->start_controls_section(
 			'section_tabs',
 			array(
 				'label' => __( 'Tab Settings', 'elementor-tab-widget' ),
@@ -104,12 +174,12 @@ class Tab_Widget extends Widget_Base {
 				'default'     => array(
 					array(
 						'tab_title'       => __( 'My margins are shrinking', 'elementor-tab-widget' ),
-						'tab_description' => __( 'A lot of factors contribute to margin compression - some beyond your dealership\'s control. But you can fight back by tackling inefficiencies that make matters worse.', 'elementor' ),
+						'tab_description' => __( 'A lot of factors contribute to margin compression - some beyond your dealership\'s control. But you can fight back by tackling inefficiencies that make matters worse.', 'elementor-tab-widget' ),
 						'tab_link_text'	=> __( 'Show me where i could be loosing money', 'elementor-tab-widget' )
 					),
 					array(
 						'tab_title'       => __( 'I\'m uncertain about compliances', 'elementor-tab-widget' ),
-						'tab_description' => __( 'Compliance slip ups can be costly to your dealerships bottom line and reputation. But it\'s tough to keep up with ever-changing regulations.', 'elementor' ),
+						'tab_description' => __( 'Compliance slip ups can be costly to your dealerships bottom line and reputation. But it\'s tough to keep up with ever-changing regulations.', 'elementor-tab-widget' ),
 						'tab_link_text'		=> __( 'Help me stay compliant', 'elementor-tab-widget' )
 					),
 				),
@@ -160,7 +230,7 @@ class Tab_Widget extends Widget_Base {
 					),
 				),
 
-				'title_field' => '{{{ tab_title }}}',
+				'title_field' => '{{ tab_title }}',
 			)
 		);
 
@@ -596,7 +666,7 @@ class Tab_Widget extends Widget_Base {
 		$this->add_control(
 			'tab_button_hover_bg_color',
 			[
-				'label' => __( 'Background Color', 'elementor-tab-widget' ),
+				'label' => __( 'Hover Background Color', 'elementor-tab-widget' ),
 				'type' => Controls_Manager::COLOR,
 				'default' => '#00599a',
 				'selectors' => [
@@ -609,7 +679,7 @@ class Tab_Widget extends Widget_Base {
 		$this->add_control(
 			'tab_btn_hover_text_color',
 			[
- 				'label' => __( 'Text Color', 'elementor-tab-widget' ),
+ 				'label' => __( 'Hover Text Color', 'elementor-tab-widget' ),
 				'type' => Controls_Manager::COLOR,
 				'default' => '#ffffff',
 				'selectors' => [
@@ -785,17 +855,28 @@ class Tab_Widget extends Widget_Base {
 
 			<section class="tab-container st-container" role="tablist">
 				<div class="tabs tabs-section">
-					<h4>WHAT ARE YOUR DEALERSHIP'S BIGGEST CHALLENGES</h4>
+					<h4 class="heading-title">
+						<?php
+						// For inline editing.
+						if ( empty( $settings['heading'] ) ) {
+							return;
+						}
+
+						$this->add_render_attribute( 'heading' );
+						$this->add_inline_editing_attributes( 'heading' );
+
+						echo esc_html( $settings['heading'] );
+						?>
+					</h4>
 					<?php
 					foreach ( $settings['tabs'] as $index => $item ) {
 
 						// For inline editing.
 						$tab_title_setting_key = $this->get_repeater_setting_key( 'tab_title', 'tabs', $index );
 						$this->add_inline_editing_attributes( $tab_title_setting_key, 'none' );
-
 						?>
 
-						<button class="tab tab-title <?php echo ( 0 === $index ) ? 'is-selected' : ''; ?>" data-theme="<?php echo esc_attr( $index ); ?>" <?php echo esc_attr( $this->get_render_attribute_string( $tab_title_setting_key ) ); ?>>
+						<button class="tab tab-title tab-section <?php echo (0 === $index) ? 'is-selected' : '' ?>" data-theme="<?php echo esc_attr( $index ); ?>" <?php echo esc_attr( $this->get_render_attribute_string( $tab_title_setting_key ) ); ?>>
 							<?php echo esc_html( $item['tab_title'] ); ?>
 						</button>
 						<?php
@@ -829,7 +910,9 @@ class Tab_Widget extends Widget_Base {
 						?>
 						<section class="tab-content <?php echo ( 0 === $index ) ? 'is-selected' : ''; ?>" data-theme="<?php echo esc_attr( $index ); ?>">
 							<div class="tab-content__left">
-								<div <?php echo esc_attr( $this->get_render_attribute_string( $tab_description_setting_key ) ); ?>><?php echo esc_html( $item['tab_description'] ); ?></div>
+								<div <?php echo esc_attr( $this->get_render_attribute_string( $tab_description_setting_key ) ); ?>>
+									<?php echo esc_html( $item['tab_description'] ); ?>
+								</div>
 								<div class="tab-btn">
 									<a href="<?php echo esc_url( $item['tab_link_url']['url'] ); ?>" <?php echo esc_attr( $button_target ); ?> <?php echo esc_attr( $button_nofollow ); ?> alt="<?php echo esc_attr( $item['tab_link_text'] ); ?>" >
 										<span <?php echo esc_attr( $this->get_render_attribute_string( $tab_btn_text_setting_key ) ); ?>><?php echo esc_html( $item['tab_link_text'] ); ?></span>
@@ -840,7 +923,7 @@ class Tab_Widget extends Widget_Base {
 								<img class="tab-img" src="<?php echo esc_url( $item['tab_image']['url']); ?>" alt="<?php echo esc_attr( $item['tab_title'] ); ?>" />
 							</div>
 						</section>
-					<?php } ?>
+						<?php } ?>
 				</div>
 			</section>
 
@@ -911,6 +994,12 @@ class Tab_Widget extends Widget_Base {
 			#>
 			<section class="tab-container st-container" role="tablist">
 				<div class="tabs tabs-section">
+					<h4 class="heading-title">
+						var heading = settings.heading;
+						view.addRenderAttribute( 'heading' );
+
+						{{ settings.heading }}
+					</h4>
 					<#
 					_.each( settings.tabs, function( item, index ) {
 						<!-- For inline editing.. -->
@@ -919,11 +1008,11 @@ class Tab_Widget extends Widget_Base {
 
 						#>
 						<# if ( index === 0 ) { #>
-						<button class="tab is-selected tab-section" data-theme="{{ index }}">
+						<button class="tab is-selected tab-title tab-section" data-theme="{{ index }}" {{ view.getRenderAttributeString( tabTitleKey ) }}>
 						<# } else { #>
-						<button class="tab tab-title" data-theme="{{ index }}" {{{ view.getRenderAttributeString( tabTitleKey ) }}}>
+						<button class="tab tab-title tab-section" data-theme="{{ index }}" {{ view.getRenderAttributeString( tabTitleKey ) }}>
 						<# } #>
-							{{{ item.tab_title }}}
+							{{ item.tab_title }}
 						</button>
 					<# } ); #>
 				</div>
@@ -956,10 +1045,10 @@ class Tab_Widget extends Widget_Base {
 						<section class="tab-content" data-theme="{{ index }}">
 						<# } #>
 							<div class="tab-content__left">
-								<div {{{ view.getRenderAttributeString( tabDescriptionKey ) }}}> {{{ item.tab_description }}} </div>
+								<div {{ view.getRenderAttributeString( tabDescriptionKey ) }}> {{ item.tab_description }} </div>
 								<div class="tab-btn">
 									<a href="{{ item.tab_link_url.url }}" {{ link_target }} {{ link_nofollow }}>
-										<span {{{ view.getRenderAttributeString( tabBtnTextKey ) }}}> {{{ item.tab_link_text }}} </span>
+										<span {{ view.getRenderAttributeString( tabBtnTextKey ) }}> {{ item.tab_link_text }} </span>
 									</a>
 								</div>
 							</div>
@@ -1003,17 +1092,17 @@ class Tab_Widget extends Widget_Base {
 						<input type="checkbox" id="{{ index }}" />
 						<# } #>
 						<label class="tab-label-mobile tab-title" for="{{ index }}">
-							<span {{{ view.getRenderAttributeString( tabTitleKey ) }}}> {{{ item.tab_title }}} </span>
+							<span {{ view.getRenderAttributeString( tabTitleKey ) }}> {{ item.tab_title }} </span>
 						</label>
 
 						<div class="tab-content-mobile">
 							<div class="tab-img-mobile img-wrapper">
 								<img src="{{ item.tab_image.url }}" alt="{{ item.tab_title }}" class="tab-img" />
 							</div>
-							<div {{{ view.getRenderAttributeString( tabDescriptionKey ) }}}> {{{ item.tab_description }}} </div>
+							<div {{ view.getRenderAttributeString( tabDescriptionKey ) }}> {{ item.tab_description }} </div>
 							<div class="tab-btn">
 								<a href="{{ item.tab_link_url.url }}" {{ link_target }} {{ link_nofollow }}>
-									<span {{{ view.getRenderAttributeString( tabBtnTextKey ) }}}> {{{ item.tab_link_text }}} </span>
+									<span {{ view.getRenderAttributeString( tabBtnTextKey ) }}> {{ item.tab_link_text }} </span>
 								</a>
 							</div>
 						</div>

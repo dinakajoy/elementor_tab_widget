@@ -13,45 +13,64 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class Widgets_Loader {
 
-	// Plugin version.
-	const VERSION = '1.0.0';
-
-	// Minimum Elementor Version.
-	const MINIMUM_ELEMENTOR_VERSION = '3.0.0';
-
-	// Minimum PHP Version.
-	const MINIMUM_PHP_VERSION = '5.2';
-
-	// Instance.
-	private static $_instance = null;
-
-	// Return plugin version.
-	public function etw_get_version() {
-		$plugin_data = get_plugin_data( __FILE__ );
-		$plugin_version = $plugin_data['Version'];
-
-		return $plugin_version;
-
-	}
-
-	// Deactivate plugin.
-	public function deactivate_plugin() {
-		if ( is_plugin_active( '../elementor-tab-widget.php' ) ) {
-			deactivate_plugins( '../elementor-tab-widget.php' );
-		}
-	}
-
 	/**
-	 * SIngletone Instance Method
+	 * Plugin Version
 	 *
 	 * @since 1.0.0
+	 *
+	 * @var string The plugin version.
+	 */
+	const VERSION = '1.0.0';
+
+	/**
+	 * Minimum Elementor Version
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string Minimum Elementor version required to run the plugin.
+	 */
+	const MINIMUM_ELEMENTOR_VERSION = '2.0.0';
+
+	/**
+	 * Minimum PHP Version
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string Minimum PHP version required to run the plugin.
+	 */
+	const MINIMUM_PHP_VERSION = '7.0';
+
+	/**
+	 * Instance
+	 *
+	 * @since 1.0.0
+	 *
+	 * @access private
+	 * @static
+	 *
+	 * @var Elementor_Test_Extension The single instance of the class.
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Instance
+	 *
+	 * Ensures only one instance of the class is loaded or can be loaded.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @access public
+	 * @static
+	 *
+	 * @return Elementor_Test_Extension An instance of the class.
 	 */
 	public static function instance() {
+
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 		}
-
 		return self::$_instance;
+
 	}
 
 	/**
@@ -144,7 +163,7 @@ final class Widgets_Loader {
 	 */
 	public function widget_styles() {
 
-		wp_register_style( 'elementor-tab-widget-style', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/css/tab.css', array(), $this->etw_get_version(), 'all' );
+	wp_register_style( 'elementor-tab-widget-style', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/css/tab.css', array(), self::VERSION, 'all' );
 		wp_register_style( 'font-awesome', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/fonts/font-awesome.min.css', array(), '4.7.0', null );
 
 		wp_enqueue_style( 'elementor-tab-widget-style' );
@@ -159,7 +178,7 @@ final class Widgets_Loader {
 	 */
 	public function widget_scripts() {
 
-		wp_register_script( 'elementor-tab-widget-script', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/js/tab.js', array( 'jquery' ), $this->etw_get_version(), true );
+		wp_register_script( 'elementor-tab-widget-script', ELEMENTOR_TAB_WIDGET_PLUGIN_URL . 'assets/build/js/tab.js', array( 'jquery' ), self::VERSION, true );
 
 		wp_enqueue_script( 'elementor-tab-widget-script' );
 
@@ -201,64 +220,88 @@ final class Widgets_Loader {
 	}
 
 	/**
-	 * Admin Notice
-	 * Warning when the site doesn't have Elementor installed or activated
+	 * Admin notice
+	 *
+	 * Warning when the site doesn't have Elementor installed or activated.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @access public
 	 */
 	public function admin_notice_missing_main_plugin() {
-		$this->deactivate_plugin();
 
-			$message = sprintf(
-				/* translators: %s: error message */
-				esc_html__( '"%1$s" requires "%2$s" to be installed and activated', 'elementor-tab-widget' ),
-				'<strong>' . esc_html__( 'Elementor Tab Widget', 'elementor-tab-widget' ) . '</strong>',
-				'<strong>' . esc_html__( 'Elementor', 'elementor-tab-widget' ) . '</strong>'
-			);
 
-		printf( '<div class="notice notice-warning is-dimissible"><p>%1$s</p></div>', esc_html( $message ) );
+		/* Ignore phpcs errors because there is no input from user, just a check function */
+		if ( isset( $_GET['activate'] ) ) { // phpcs:ignore
+			unset( $_GET['activate'] ); // phpcs:ignore
+		}
+
+		$message = sprintf(
+			/* translators: 1: Plugin name 2: Elementor */
+			esc_html__( '"%1$s" requires "%2$s" to be installed and activated.', 'elementor-test-extension' ),
+			'<strong>' . esc_html__( 'Elementor Test Extension', 'elementor-test-extension' ) . '</strong>',
+			'<strong>' . esc_html__( 'Elementor', 'elementor-test-extension' ) . '</strong>'
+		);
+
+		printf( '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', esc_html( $message ) );
+
 	}
 
 	/**
-	 * Admin Notice
+	 * Admin notice
+	 *
 	 * Warning when the site doesn't have a minimum required Elementor version.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @access public
 	 */
 	public function admin_notice_minimum_elementor_version() {
-		$this->deactivate_plugin();
+
+		/* Ignore phpcs errors because there is no input from user, just a check function */
+		if ( isset( $_GET['activate'] ) ) { // phpcs:ignore
+			unset( $_GET['activate'] ); // phpcs:ignore
+		}
 
 		$message = sprintf(
-			/* translators: %s: error message */
-			esc_html__( '"%1$s" requires "%2$s" version %3$s or greater', 'elementor-tab-widget' ),
-			'<strong>' . esc_html__( 'Elementor Tab Widget', 'elementor-tab-widget' ) . '</strong>',
-			'<strong>' . esc_html__( 'Elementor', 'elementor-tab-widget' ) . '</strong>',
+			/* translators: 1: Plugin name 2: Elementor 3: Required Elementor version */
+			esc_html__( '"%1$s" requires "%2$s" version %3$s or greater.', 'elementor-test-extension' ),
+			'<strong>' . esc_html__( 'Elementor Test Extension', 'elementor-test-extension' ) . '</strong>',
+			'<strong>' . esc_html__( 'Elementor', 'elementor-test-extension' ) . '</strong>',
 			self::MINIMUM_ELEMENTOR_VERSION
 		);
 
-		printf( '<div class="notice notice-warning is-dimissible"><p>%1$s</p></div>', esc_html( $message ) );
+		printf( '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', esc_html( $message ) );
+
 	}
 
 	/**
-	 * Admin Notice
+	 * Admin notice
+	 *
 	 * Warning when the site doesn't have a minimum required PHP version.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @access public
 	 */
 	public function admin_notice_minimum_php_version() {
-		$this->deactivate_plugin();
+
+		/* Ignore phpcs errors because there is no input from user, just a check function */
+		if ( isset( $_GET['activate'] ) ) { // phpcs:ignore
+			unset( $_GET['activate'] ); // phpcs:ignore
+		}
 
 		$message = sprintf(
-			/* translators: %s: error message */
-			esc_html__( '"%1$s" requires "%2$s" version %3$s or greater', 'elementor-tab-widget' ),
-			'<strong>' . esc_html__( 'Elementor Tab Widget', 'elementor-tab-widget' ) . '</strong>',
-			'<strong>' . esc_html__( 'PHP', 'elementor-tab-widget' ) . '</strong>',
+			/* translators: 1: Plugin name 2: PHP 3: Required PHP version */
+			esc_html__( '"%1$s" requires "%2$s" version %3$s or greater.', 'elementor-test-extension' ),
+			'<strong>' . esc_html__( 'Elementor Test Extension', 'elementor-test-extension' ) . '</strong>',
+			'<strong>' . esc_html__( 'PHP', 'elementor-test-extension' ) . '</strong>',
 			self::MINIMUM_PHP_VERSION
 		);
 
-		printf( '<div class="notice notice-warning is-dimissible"><p>%1$s</p></div>', esc_html( $message ) );
-	}
+		printf( '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', esc_html( $message ) );
 
+	}
 }
 
 Widgets_Loader::instance();

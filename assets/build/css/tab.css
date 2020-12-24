@@ -334,7 +334,7 @@ button {
 
 .tab-content {
   display: grid;
-  grid-template-columns: 60% 40%;
+  grid-template-columns: 60% 38%;
   grid-gap: 0.625rem;
   opacity: 0;
   position: absolute;
