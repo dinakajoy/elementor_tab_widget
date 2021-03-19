@@ -3,6 +3,8 @@ Elementor Tab Widget
 
 Elementor_Tab_Widget is a customized tab widget plugin built on the popular Elementor Builder
 
+![102857327-36a73e00-444e-11eb-8149-9ab1084f9ad9](https://user-images.githubusercontent.com/39722740/111776196-ff5ff600-88b1-11eb-8048-6a07758f451b.gif)
+
 Getting Started
 ---------------
 
