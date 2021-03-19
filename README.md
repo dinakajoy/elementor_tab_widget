@@ -1,4 +1,4 @@
-Designfly
+Elementor Tab Widget
 ===
 
 Elementor_Tab_Widget is a customized tab widget plugin built on the popular Elementor Builder
