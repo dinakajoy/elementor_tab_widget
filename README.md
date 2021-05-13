@@ -39,10 +39,12 @@ This `precommit` script will lint your scss, js files and also generate pot file
 npm run precommit
 ```
 
-
 ### Usage
 
 Install Elementor builder plugin
 Zip and upload this file under `Upload Plugin`, install and activate
 Open the page you want to add tab to and edit with Elementor
 Drag widget to desired page section and customize as desired
+
+#### Author
+[Odinaka Joy](http://dinakajoy.com)
